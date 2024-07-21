@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_programing/controller/counter_controller.dart';
+import 'package:getx_programing/basic_app/controller/counter_controller.dart';
 
 class CounterPage extends StatelessWidget {
   final CounterController counterController = Get.put(CounterController());
