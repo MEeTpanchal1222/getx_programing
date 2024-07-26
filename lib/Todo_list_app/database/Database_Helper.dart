@@ -1,83 +1,70 @@
-import 'package:sqflite/sqflite.dart';
+import 'package:getx_programing/Todo_list_app/modal/todo_modal.dart';
 import 'package:path/path.dart';
-
-import '../modal/todo_modal.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static final String databaseName = "todo.db";
-  static final String tableName = "todos";
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  factory DatabaseHelper() => _instance;
+  static Database? _database;
 
-  Database? _database;
+  DatabaseHelper._internal();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDatabase();
+    _database = await _initDb();
     return _database!;
   }
 
-
-
-  Future<Database> _initDatabase() async {
+  Future<Database> _initDb() async {
     final dbPath = await getDatabasesPath();
-    final fullPath = path.join(dbPath, databaseName);
-    return await openDatabase(fullPath,
-        version: 1, onCreate: (db, version) {
-          db.execute('''
-          CREATE TABLE $tableName (
+    final path = join(dbPath, 'todo.db');
+
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE todos(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL
+            taskName TEXT,
+            isDone INTEGER,
+            note TEXT,
+            priority INTEGER
           )
         ''');
-        });
+      },
+    );
   }
 
-  // CRUD operations with raw SQL queries
-
-  //INSERT
-  Future<int> insertNote(Todo Todo) async {
+  Future<int> insertTodo(Todo todo) async {
     final db = await database;
-    final result = await db.rawInsert(
-        '''INSERT INTO $tableName (title, content) VALUES (?, ?)''',
-        [Todo.title, Todo.description]);
-    return result;
+    return await db.insert('todos', todo.toMap());
   }
 
-  // READ BY ID
-  Future<Todo?> getNoteById(int id) async {
+  Future<List<Todo>> getTodos() async {
     final db = await database;
-    final maps = await db.rawQuery(
-        '''SELECT * FROM $tableName WHERE id = ?''', [id]);
-    if (maps.isNotEmpty) {
-      return Todo.fromMap(maps.first);
-    }
-    return null;
+    final maps = await db.query('todos');
+    return List.generate(maps.length, (i) {
+      return Todo.fromMap(maps[i]);
+    });
   }
 
-// READ ALL DATA
-  Future<List<Todo>> getAllNotes() async {
+  Future<int> updateTodo(Todo todo) async {
     final db = await database;
-    final maps = await db.rawQuery('''SELECT * FROM $tableName''');
-    return List.generate(maps.length, (i) => Todo.fromMap(maps[i]));
+    return await db.update(
+      'todos',
+      todo.toMap(),
+      where: 'id = ?',
+      whereArgs: [todo.id],
+    );
   }
 
-// UPDATE
-  Future<int> updateNote(Todo Todo) async {
+  Future<int> deleteTodo(int id) async {
     final db = await database;
-    final result = await db.rawUpdate(
-        '''UPDATE $tableName SET title = ?, content = ? WHERE id = ?''',
-        [Todo.title, Todo.description, Todo.id]);
-    return result;
+    return await db.delete(
+      'todos',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
-
-// DELETE BY ID
-  Future<int> deleteNote(int id) async {
-    final db = await database;
-    final result = await db.rawDelete(
-        '''DELETE FROM $tableName WHERE id = ?''', [id]);
-    return result;
-  }
-
-
-
 }

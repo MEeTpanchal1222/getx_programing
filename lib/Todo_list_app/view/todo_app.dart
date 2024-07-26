@@ -4,125 +4,103 @@ import 'package:getx_programing/Todo_list_app/controller/todo_controller.dart';
 import 'package:getx_programing/Todo_list_app/modal/todo_modal.dart';
 
 class TodoApp extends StatelessWidget {
-  final TodoController todoController = Get.put(TodoController());
-
   @override
   Widget build(BuildContext context) {
+    final TodoController todoController = Get.put(TodoController());
+
     return Scaffold(
-      floatingActionButton:  FloatingActionButton(
-        onPressed: () {
-          _showAddDialog(context);
-        },
+      appBar: AppBar(title: Text('TODO App')),
+      body: Obx(() {
+        return ListView.builder(
+          itemCount: todoController.todos.length,
+          itemBuilder: (context, index) {
+            final todo = todoController.todos[index];
+            return Card(
+              color: _getPriorityColor(todo.priority),
+              child: ListTile(
+                title: Text(todo.taskName),
+                subtitle: Text(todo.note),
+                trailing: IconButton(
+                  icon: Icon(
+                    todo.isDone ? Icons.check_box : Icons.check_box_outline_blank,
+                  ),
+                  onPressed: () {
+                    todo.isDone = !todo.isDone;
+                    todoController.updateTodo(todo);
+                  },
+                ),
+                onLongPress: () => todoController.deleteTodo(todo.id!),
+              ),
+            );
+          },
+        );
+      }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddTodoDialog(context, todoController),
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(
-        title: Text("Todo's"),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Obx(() {
-              return ListView.builder(
-                itemCount: todoController.allTodos.length,
-                itemBuilder: (context, index) {
-                  final todo = todoController.allTodos[index];
-                  return ListTile(
-                    title: Text(todo.title),
-                    subtitle: Text(todo.description),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        todoController.deleteTodo(todo.id);
-                      },
-                    ),
-                    onTap: () {
-                      _showUpdateDialog(context, todo);
-                    },
-                  );
-                },
-              );
-            }),
-          ),
-        ],
-      ),
     );
   }
 
-  void _showAddDialog(BuildContext context) {
-    final titleController = TextEditingController();
-    final descriptionController = TextEditingController();
+  Color _getPriorityColor(int priority) {
+    switch (priority) {
+      case 1:
+        return Colors.green;
+      case 2:
+        return Colors.yellow;
+      case 3:
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  void _showAddTodoDialog(BuildContext context, TodoController controller) {
+    final taskNameController = TextEditingController();
+    final noteController = TextEditingController();
+    int priority = 1;
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add Todo'),
+          title: Text('Add TODO'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                controller: taskNameController,
+                decoration: InputDecoration(labelText: 'Task Name'),
               ),
               TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                controller: noteController,
+                decoration: InputDecoration(labelText: 'Note'),
+              ),
+              DropdownButton<int>(
+                value: priority,
+                items: [
+                  DropdownMenuItem(value: 1, child: Text('Low')),
+                  DropdownMenuItem(value: 2, child: Text('Medium')),
+                  DropdownMenuItem(value: 3, child: Text('High')),
+                ],
+                onChanged: (value) {
+                  if (value != null) priority = value;
+                },
               ),
             ],
           ),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                final id = DateTime.now().millisecondsSinceEpoch;
                 final todo = Todo(
-                  id: id,
-                  title: titleController.text,
-                  description: descriptionController.text,
+                  taskName: taskNameController.text,
+                  note: noteController.text,
+                  priority: priority,
                 );
-                todoController.addTodo(todo);
-                Navigator.of(context).pop();
+                controller.addTodo(todo);
+                Get.back();
               },
               child: Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showUpdateDialog(BuildContext context, Todo todo) {
-    final titleController = TextEditingController(text: todo.title);
-    final descriptionController = TextEditingController(text: todo.description);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Update Todo'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(labelText: 'Title'),
-              ),
-              TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
-              ),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                todoController.updateTodo(
-                  todo.id,
-                  titleController.text,
-                  descriptionController.text,
-                );
-                Navigator.of(context).pop();
-              },
-              child: Text('Update'),
             ),
           ],
         );

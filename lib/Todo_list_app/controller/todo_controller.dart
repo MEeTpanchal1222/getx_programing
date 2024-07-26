@@ -1,28 +1,33 @@
 import 'package:get/get.dart';
+import 'package:getx_programing/Todo_list_app/database/Database_Helper.dart';
 import 'package:getx_programing/Todo_list_app/modal/todo_modal.dart';
 
 class TodoController extends GetxController {
-  //todo list
   var todos = <Todo>[].obs;
+  final DatabaseHelper dbHelper = DatabaseHelper();
 
-  //create
-  void addTodo(Todo todo) {
-    todos.add(todo);
+  @override
+  void onInit() {
+    super.onInit();
+    loadTodos();
   }
 
-  // Read
-  List<Todo> get allTodos => todos;
-
-  // Update
-  void updateTodo(int id, String title, String description) {
-    var todo = todos.firstWhere((todo) => todo.id == id);
-    todo.title = title;
-    todo.description = description;
-    todos.refresh();
+  Future<void> loadTodos() async {
+    todos.value = await dbHelper.getTodos();
   }
 
-  // Delete
-  void deleteTodo(int id) {
-    todos.removeWhere((todo) => todo.id == id);
+  Future<void> addTodo(Todo todo) async {
+    await dbHelper.insertTodo(todo);
+    loadTodos();
+  }
+
+  Future<void> updateTodo(Todo todo) async {
+    await dbHelper.updateTodo(todo);
+    loadTodos();
+  }
+
+  Future<void> deleteTodo(int id) async {
+    await dbHelper.deleteTodo(id);
+    loadTodos();
   }
 }
