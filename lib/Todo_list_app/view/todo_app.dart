@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_programing/Todo_list_app/controller/car_controller.dart';
+import 'package:getx_programing/Todo_list_app/controller/todo_controller.dart';
 import 'package:getx_programing/Todo_list_app/modal/todo_modal.dart';
 
 class TodoApp extends StatelessWidget {

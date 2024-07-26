@@ -15,7 +15,7 @@ import 'package:getx_programing/basic_app/view/theme_page/page.dart';
 
 
 void main() {
-  runApp(FORM_APP());
+  runApp(TODO_APP());
 }
 
 

@@ -97,7 +97,7 @@ class QuizController extends GetxController {
     if (currentQuestionIndex.value < questions.length - 1) {
       currentQuestionIndex++;
     } else {
-      Get.toNamed("/home");
+      Get.toNamed("/Result");
     }
   }
 
