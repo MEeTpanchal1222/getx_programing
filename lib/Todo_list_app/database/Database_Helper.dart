@@ -24,8 +24,8 @@ class DatabaseHelper {
 
   //Database Initialization
 
-  // A getter that initializes the database if it
-  // hasn't been initialized yet, otherwise returns the existing instance.
+  // A getter that initializes the database if it hasn't been initialized yet,
+  // otherwise returns the existing instance.
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDb();
@@ -34,15 +34,24 @@ class DatabaseHelper {
 
   // A private method that initializes the database
   Future<Database> _initDb() async {
-    //getDatabasesPath(): Retrieves the default database directory path for the app.
-    final dbPath = await getDatabasesPath();//
-    //join(dbPath, 'todo.db'): Joins the directory path with the database name todo.db.
+    //Retrieves the default database directory path for the app using getDatabasesPath()
+    final dbPath = await getDatabasesPath();
+
+    //Joins the directory path (dbPath) with the database name (todo.db) to form the full database path
     final path = join(dbPath, 'todo.db');
 
+    /* Opens the database at the specified path. If the database does not exist,
+    it creates it. The version parameter specifies the version of the database.
+    The onCreate callback is executed when the database is created for the first time.
+    */
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
+        /*
+        Executes the SQL statement to create the todos table
+        with columns: id, taskName, isDone, note, and priority.
+        */
         await db.execute('''
           CREATE TABLE todos(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
