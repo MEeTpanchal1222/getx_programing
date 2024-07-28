@@ -55,7 +55,7 @@ class DatabaseHelper {
         await db.execute('''
           CREATE TABLE todos(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            taskName TEXT,
+            taskName TEXT NOT NULL,
             isDone INTEGER,
             note TEXT,
             priority INTEGER
@@ -72,7 +72,9 @@ class DatabaseHelper {
 
   Future<List<Todo>> getTodos() async {
     final db = await database;
-    final maps = await db.query('todos');
+    final maps = await db.query('todos',
+        orderBy: 'priority DESC'
+    );
     return List.generate(maps.length, (i) {
       return Todo.fromMap(maps[i]);
     });

@@ -62,8 +62,24 @@ class TODO_APP extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      theme: ThemeData(
+        textTheme: TextTheme(
+          labelMedium: TextStyle(
+            color: Colors.white,
+            fontSize: 20
+          ),
+          labelLarge: TextStyle(
+            color: Colors.white,
+            fontSize: 33
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+          size: 35,
+        )
+      ),
       debugShowCheckedModeBanner: false,
-      title: 'GetX CRUD Example',
+      title: 'GetX CRUD AND ALSO DATABASE Example',
       home: TodoApp(),
     );
   }
