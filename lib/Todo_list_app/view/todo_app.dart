@@ -3,7 +3,12 @@ import 'package:get/get.dart';
 import 'package:getx_programing/Todo_list_app/controller/todo_controller.dart';
 import 'package:getx_programing/Todo_list_app/modal/todo_modal.dart';
 
-class TodoApp extends StatelessWidget {
+class TodoApp extends StatefulWidget {
+  @override
+  State<TodoApp> createState() => _TodoAppState();
+}
+
+class _TodoAppState extends State<TodoApp> {
   @override
   Widget build(BuildContext context) {
     final TodoController todoController = Get.put(TodoController());
@@ -75,7 +80,7 @@ class TodoApp extends StatelessWidget {
                     controller: noteController,
                     decoration: InputDecoration(labelText: 'Note'),
                   ),
-                 DropdownButton<int>(
+                 DropdownButton (
                         value: controller.priority.value,
                         items: [
                           DropdownMenuItem(value: 0, child: Text('default')),
@@ -84,7 +89,7 @@ class TodoApp extends StatelessWidget {
                           DropdownMenuItem(value: 3, child: Text('High')),
                         ],
                         onChanged: (value) {
-                          if (value != null) controller.priority.value = value;
+                            if (value != null)  controller.priority.value = value ;
                         },
                       ),
                 ],
