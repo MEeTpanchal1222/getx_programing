@@ -72,7 +72,13 @@ class DatabaseHelper {
 
   Future<List<Todo>> getTodos() async {
     final db = await database;
+    // Modify the query to order by priority, with higher priority at the top
     final maps = await db.query('todos',
+        /*
+        priority column in descending order.
+         The DESC keyword means descending,
+         so higher priority values will come first.
+         */
         orderBy: 'priority DESC'
     );
     return List.generate(maps.length, (i) {

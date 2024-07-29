@@ -42,8 +42,10 @@ class _TodoAppState extends State<TodoApp> {
           );
         }),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.black,
+          shape: CircleBorder(),
           onPressed: () => _showAddTodoDialog(context, todoController),
-          child: Icon(Icons.add),
+          child: Icon(Icons.add,color: Colors.white,)
         ),
       );
   }
