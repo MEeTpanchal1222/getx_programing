@@ -43,10 +43,3 @@ https://github.com/user-attachments/assets/0987fe4c-d820-4546-b461-dd1cdbb6cf0b
 <img src= "https://github.com/user-attachments/assets/10f6e36f-a54b-4187-9496-0ea0ff132544" width="200"/>
 
 [video_quiz.webm](https://github.com/user-attachments/assets/b8a5c356-2b18-4bde-b148-6b69c9adba11)
-## TODO APP USING DATABASE
-
-
-
-
-https://github.com/user-attachments/assets/72735969-a2a8-4bd6-b4d9-be47d9a62a1e
-
